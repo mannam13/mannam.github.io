@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script type="text/javascript" src="static/motpal.js"></script>
+    <script type="text/javascript">
+        function checkKeyCode(action) {
+            return event => {
+                !document.getElementById('modal-overlay').classList.contains('modal') && action(event);
+            };
+        }
+        window.onload = function () {
+            load_players();
+            load_quest();
+            connect_stream();
+
+            // Heartbeat
+            setInterval(tick, 50000);
+
+            var shortcuts = {
+                Period: checkKeyCode(show_modal),
+                Escape: escape_action,
+                KeyD: checkKeyCode(quest_action)
+            };
+
+            document.getElementById('add-player-button').onclick = show_modal;
+            document.getElementById('modal-overlay').onclick = hide_modal;
+            document.getElementById('add-player-form').onsubmit = hide_modal;
+            document.getElementById('add-player-form').onclick = event => event.stopPropagation();
+            document.getElementById('quest-button').onclick = quest_action_click;
+            document.onclick = quest_unprime;
+            document.addEventListener('keyup', event => event.code in shortcuts && shortcuts[event.code]());
+        };
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/style.css" />
+    <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <iframe name="iframe" class="hidden"></iframe>
+    <div id="modal-overlay" class="hidden">
+    </div>
+    <h1>
+        <span class="delay-1">Most</span>
+        <span class="delay-2">of</span>
+        <span class="delay-3">these</span>
+        <span class="delay-4">people</span>
+        <span class="delay-5">are</span>
+        <span class="delay-6">lying</span>
+    </h1>
+    <ul id="player-list">
+        <li id="add-player-button">
+            <form id="add-player-form" action="players/add" method="POST" target="iframe" class="hidden">
+                <div id="add-player-dialog">
+                    <input type="text" id="name-text" name="name" placeholder="Player name">
+                    <span>
+                        <input type="text" id="article-text" name="article" placeholder="Wikipedia article">
+                        <a target="_blank" rel="noopener noreferrer"
+                            href="https://en.wikipedia.org/wiki/Special:Random">
+                            <input type="button" id="random-button" value="">
+                        </a>
+                    </span>
+                    <input id="add-player-submit" type="submit" value="Enter">
+                    <p><em>Hint:</em> Press <span>.</span> to bring up this prompt.</p>
+                </div>
+            </form>
+        </li>
+    </ul>
+    <div id="quest-block" class="hidden">
+        <button id="quest-button" class="collapsed"></button>
+    </div>
+</body>
+
+</html>

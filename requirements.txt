@@ -1,0 +1,8 @@
+flask
+flask-sse
+flask-sqlalchemy
+sqlalchemy
+psycopg2
+gunicorn
+redis
+gevent
